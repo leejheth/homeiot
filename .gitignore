@@ -1,0 +1,7 @@
+# sensitive credentials data
+credentials.txt
+mysql.txt
+conf/*
+
+# also keep all .gitkeep files
+!.gitkeep

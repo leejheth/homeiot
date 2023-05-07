@@ -1,0 +1,9 @@
+ipython~=8.10
+jupyter~=1.0
+jupyterlab_server>=2.11.1, <2.16.0
+jupyterlab~=3.0, <3.6.0
+mysql-connector-python
+pip-tools<7.0
+sensirion-i2c-scd
+sensirion-shdlc-sensorbridge
+
