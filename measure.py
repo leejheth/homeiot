@@ -1,6 +1,6 @@
 from sensirion_shdlc_driver import ShdlcSerialPort, ShdlcConnection
 from sensirion_shdlc_sensorbridge import SensorBridgePort, SensorBridgeShdlcDevice, SensorBridgeI2cProxy
-from sensirion_i2c_driver import I2cConnection
+from sensirion_i2c_driver import I2cConnection, I2cDevice
 from sensirion_i2c_scd import Scd4xI2cDevice
 
 import mysql.connector 
@@ -41,10 +41,10 @@ with open('conf/mysql.txt', 'r') as f:
 # Connect to the SensorBridge with default settings:
 #  - baudrate:      460800
 #  - slave address: 0
-with ShdlcSerialPort(port='COM1', baudrate=460800) as port:
+with ShdlcSerialPort(port='COM6', baudrate=460800) as port:
     bridge = SensorBridgeShdlcDevice(ShdlcConnection(port), slave_address=0)
-    print("SensorBridge SN: {}".format(bridge.get_serial_number()))
-
+    print("SensorBridge SN: {bridge.get_serial_number()}")
+    
     # Configure SensorBridge port 1 for SCD4x
     bridge.set_i2c_frequency(SensorBridgePort.ONE, frequency=100e3)
     bridge.set_supply_voltage(SensorBridgePort.ONE, voltage=3.3)
@@ -62,15 +62,11 @@ with ShdlcSerialPort(port='COM1', baudrate=460800) as port:
         time.sleep(60)
         co2, temperature, humidity = scd41.read_measurement()
 
+        # print the output:
+        print(f"{co2}, {temperature}, {humidity}")
+
         # upload data to MySQL database
         upload_SQL(round(co2), round(temperature), round(humidity), sql_credentials_all)
 
-        # use default formatting for printing output:
-        print(f"{co2}, {temperature}, {humidity}")
-        # custom printing of attributes:
-        print("{:d} ppm CO2, {:0.2f} °C ({} ticks), {:0.1f} %RH ({} ticks)".format(
-            co2.co2,
-            temperature.degrees_celsius, temperature.ticks,
-            humidity.percent_rh, humidity.ticks))
     scd41.stop_periodic_measurement()
 

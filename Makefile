@@ -10,6 +10,6 @@ setup:
 	conda create -y -n $(ENV) python=3.9 && \
 	conda activate $(ENV) && \
 	python -m pip install -r requirements.txt && \
-	echo 'PYTHONPATH=$(PWD)/src:$$PYTHONPATH' > .env && \
+	echo 'PYTHONPATH=$(PWD):$$PYTHONPATH' > .env && \
 	echo 'Home IoT project setup successful.' && \
 	echo 'To activate your conda environment, run `conda activate $(ENV)`.'
