@@ -13,36 +13,10 @@ import mysql.connector
 import time
 import datetime
 
-def upload_SQL(co2, temperature, humidity, sql_credentials_all):
-    sql_credentials = sql_credentials_all.splitlines()
-
-    try:
-        conn = mysql.connector.connect(
-            host=sql_credentials[0],
-            database=sql_credentials[1],
-            user=sql_credentials[2],
-            password=sql_credentials[3],
-            port=sql_credentials[4]
-        )
-        
-        cur = conn.cursor()
-        tablename = sql_credentials[5]
-        query = f"INSERT INTO {tablename} (CO2, temperature, humidity, time) VALUES (%s, %s, %s, %s)"
-        timestamp = datetime.datetime.now().strftime("%Y-%m-%d, %H:%M:%S")
-        cur.execute(query, (co2,temperature,humidity,timestamp))
-        conn.commit()
-        cur.close()
-
-    except mysql.connector.Error as e:
-        print(e)
-    finally:
-        if conn is not None:
-            conn.close()
-
 # get MySQL database information and credentials data from text file
 # .txt file format: host, database, user, password, table (at each line)
 with open('conf/mysql.txt', 'r') as f:
-    sql_credentials_all = f.read()
+    sql_credentials = f.read().splitlines()
 
 # Connect to the SensorBridge with default settings:
 #  - baudrate:      460800
@@ -69,16 +43,38 @@ with ShdlcSerialPort(port='COM6', baudrate=460800) as port:
     # start periodic measurement in high power mode
     scd4x.start_periodic_measurement()
 
+    # establish connection to MySQL database
+    conn = mysql.connector.connect(
+        host=sql_credentials[0],
+        database=sql_credentials[1],
+        user=sql_credentials[2],
+        password=sql_credentials[3],
+        port=sql_credentials[4]
+    )
+
+    cur = conn.cursor()
+    tablename = sql_credentials[5]
+
     # Measure every 60 seconds
-    while True:
-        time.sleep(60)
-        co2, temperature, humidity = scd4x.read_measurement()
+    try:
+        while True:
+            time.sleep(60)
+            co2, temperature, humidity = scd4x.read_measurement()
+            timestamp = datetime.datetime.now().strftime("%Y-%m-%d, %H:%M:%S")
 
-        # print the output
-        print(f"{co2}, {temperature}, {humidity}")
+            # print the output
+            print(f"{co2}, {temperature}, {humidity}")
 
-        # upload data to MySQL database
-        upload_SQL(f"{co2}", f"{temperature}", f"{humidity}", sql_credentials_all)
+            # upload data to MySQL database
+            query = f"INSERT INTO {tablename} (CO2, temperature, humidity, time) VALUES (%s, %s, %s, %s)"
+            cur.execute(query, (f"{co2}", f"{temperature}", f"{humidity}",timestamp))
+            conn.commit()
+    
+    except KeyboardInterrupt:
+        print("Keyboard interruption detected. Exiting...")
 
-    scd41.stop_periodic_measurement()
+    finally:
+        scd4x.stop_periodic_measurement()
+        cur.close()
+        conn.close()
 
