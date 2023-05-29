@@ -1,4 +1,4 @@
-FROM python:3.9-slim-buster
+FROM python:3.9 
 
 # Set the working directory
 WORKDIR /home
@@ -22,5 +22,4 @@ RUN pip install --no-cache-dir -r /tmp/requirements.txt && \
 EXPOSE 8888
 
 # Run the Python script when the container starts
-# CMD ["python", "measure.py"]
-CMD ["/bin/bash"]
+CMD ["python", "measure.py"]

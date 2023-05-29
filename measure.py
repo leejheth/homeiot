@@ -21,7 +21,7 @@ with open('conf/mysql.txt', 'r') as f:
 # Connect to the SensorBridge with default settings:
 #  - baudrate:      460800
 #  - slave address: 0
-with ShdlcSerialPort(port='COM6', baudrate=460800) as port:
+with ShdlcSerialPort(port='/dev/ttyUSB0', baudrate=460800) as port:
     bridge = SensorBridgeShdlcDevice(ShdlcConnection(port), slave_address=0)
     print("SensorBridge SN: {}".format(bridge.get_serial_number()))
 
@@ -63,7 +63,7 @@ with ShdlcSerialPort(port='COM6', baudrate=460800) as port:
             timestamp = datetime.datetime.now().strftime("%Y-%m-%d, %H:%M:%S")
 
             # print the output
-            print(f"{co2}, {temperature}, {humidity}")
+            # print(f"{co2}, {temperature}, {humidity}")
 
             # upload data to MySQL database
             query = f"INSERT INTO {tablename} (CO2, temperature, humidity, time) VALUES (%s, %s, %s, %s)"
