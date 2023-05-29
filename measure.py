@@ -55,19 +55,20 @@ with ShdlcSerialPort(port='/dev/ttyUSB0', baudrate=460800) as port:
     cur = conn.cursor()
     tablename = sql_credentials[5]
 
-    # Measure every 60 seconds
+    # Measure every 5 minutes
     try:
         while True:
-            time.sleep(60)
+            time.sleep(300)
             co2, temperature, humidity = scd4x.read_measurement()
-            timestamp = datetime.datetime.now().strftime("%Y-%m-%d, %H:%M:%S")
+            timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            date_str, time_str = timestamp.split(" ")
 
             # print the output
             # print(f"{co2}, {temperature}, {humidity}")
 
             # upload data to MySQL database
-            query = f"INSERT INTO {tablename} (CO2, temperature, humidity, time) VALUES (%s, %s, %s, %s)"
-            cur.execute(query, (f"{co2}", f"{temperature}", f"{humidity}",timestamp))
+            query = f"INSERT INTO {tablename} (CO2_ppm, temperature_°C, humidity_RH, date, time) VALUES (%s, %s, %s, %s, %s)"
+            cur.execute(query, (f"{co2}".removesuffix(" ppm"), f"{temperature}".removesuffix(" °C"), f"{humidity}".removesuffix(" %RH"), date_str, time_str))
             conn.commit()
     
     except KeyboardInterrupt:
