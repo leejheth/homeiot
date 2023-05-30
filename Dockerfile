@@ -1,4 +1,4 @@
-FROM python:3.9 
+FROM python:3.9-slim 
 
 # Set the working directory
 WORKDIR /home
@@ -11,7 +11,11 @@ RUN mkdir conf
 
 RUN apt-get update && \
     apt-get upgrade -y && \
-    apt-get install -y 
+    apt-get install -y && \
+    apt-get install -yq tzdata
+
+# Set the timezone
+ENV TZ=Europe/Zurich
 
 # Install requirements
 COPY requirements-docker.txt /tmp/requirements.txt
