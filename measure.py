@@ -67,7 +67,7 @@ with ShdlcSerialPort(port='/dev/ttyUSB0', baudrate=460800) as port:
             # print(f"{co2}, {temperature}, {humidity}")
 
             # upload data to MySQL database
-            query = f"INSERT INTO {tablename} (CO2_ppm, temperature_°C, humidity_RH, date, time) VALUES (%s, %s, %s, %s, %s)"
+            query = f"INSERT INTO {tablename} (CO2_ppm, temperature_degC, humidity_RH, date, time) VALUES (%s, %s, %s, %s, %s)"
             cur.execute(query, (f"{co2}".removesuffix(" ppm"), f"{temperature}".removesuffix(" °C"), f"{humidity}".removesuffix(" %RH"), date_str, time_str))
             conn.commit()
     
