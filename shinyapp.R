@@ -6,7 +6,6 @@ library(RMySQL)
 
 # Read the file and split its content into lines
 sql_credentials <- readLines("conf/mysql.txt", warn=FALSE)
-sql_credentials[1]
 
 # Database connection details
 db_host <- sql_credentials[1]
@@ -78,7 +77,7 @@ server <- function(input, output, session) {
   output$humidity_plot <- renderPlot({
     req(input$date)
     
-    # Query the CO2 data for the chosen date
+    # Query the humidity data for the chosen date
     query <- paste0("SELECT humidity_RH, date, time FROM sensirion WHERE date = '", input$date, "'")
     sensor_data <- dbGetQuery(con, query)
     sensor_data$date_time <- paste(sensor_data$date, sensor_data$time)
