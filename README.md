@@ -30,7 +30,7 @@ python measure.py
 ```
 
 ### Run Docker image on Raspberry Pi
-* Install Raspberry Pi OS Lite on micro SD card on your PC and insert the card to Raspberry Pi. In advanced setting, configure WLAN credentials and enable ssh connection.
+* [Install](https://www.raspberrypi.com/software/) Raspberry Pi OS Lite on micro SD card on your PC and insert the card to Raspberry Pi. In advanced setting, configure WLAN credentials and enable ssh connection.
 * Set [static IP address](https://www.makeuseof.com/raspberry-pi-set-static-ip/) on your Raspberry Pi, so it is always accessible via ssh connection with the same private IP address.
 * Install Docker
 ```
@@ -63,4 +63,3 @@ docker run --mount type=bind,source="$(pwd)"/conf,target=/home/conf --device=/de
 ## References
 * [SCD4x CO2 sensors](https://developer.sensirion.com/sensirion-products/scd4x-co2-sensors/)
 * [Amazon RDS](https://aws.amazon.com/rds/)
-* [Raspberry Pi OS](https://www.raspberrypi.com/software/)
