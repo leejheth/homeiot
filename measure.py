@@ -38,7 +38,7 @@ with ShdlcSerialPort(port='/dev/ttyUSB0', baudrate=460800) as port:
     # start a new measurement
     scd4x.stop_periodic_measurement()
 
-    print("scd4x Serial Number: {}".format(scd4x.read_serial_number()))
+    # print("scd4x Serial Number: {}".format(scd4x.read_serial_number()))
 
     # start periodic measurement in high power mode
     scd4x.start_periodic_measurement()

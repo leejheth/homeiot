@@ -1,5 +1,6 @@
 .env
 notebooks/*
+.Rhistory
 
 # sensitive credentials data
 credentials.txt
