@@ -60,6 +60,10 @@ Run docker container.
 docker run --mount type=bind,source="$(pwd)"/conf,target=/home/conf --device=/dev/ttyUSB0 -d here_comes_image_ID
 ```
 
+## Dashboard deployment
+
+To deploy your Shiny app on the server, e.g. on a AWS EC2 instance, there is a great tutorial [here](https://www.charlesbordet.com/en/guide-shiny-aws/#what-should-you-expect-from-this-guide).
+
 ## References
 * [SCD4x CO2 sensors](https://developer.sensirion.com/sensirion-products/scd4x-co2-sensors/)
 * [Amazon RDS](https://aws.amazon.com/rds/)
