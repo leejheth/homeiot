@@ -31,7 +31,7 @@ ui <- fluidPage(
     ),
     mainPanel(
       plotOutput("co2_plot"),
-      # plotOutput("temperature_plot"),
+      plotOutput("temperature_plot"),
       plotOutput("humidity_plot")
     ),
   )
@@ -53,6 +53,7 @@ server <- function(input, output, session) {
     updateSelectInput(session, "date", choices = get_available_dates(), selected = today)
   })
 
+  # CO2 plot
   output$co2_plot <- renderPlot({
     req(input$date)
     
@@ -74,6 +75,31 @@ server <- function(input, output, session) {
       scale_x_datetime(date_breaks = "1 hour", date_labels = "%H") +
       theme_grey(base_size = 14)
   })
+  
+  # Temperature plot
+  output$temperature_plot <- renderPlot({
+    req(input$date)
+    
+    # Query the temperature data for the chosen date
+    query <- paste0("SELECT temperature_degC, date, time FROM sensirion WHERE date = '", input$date, "'")
+    sensor_data <- dbGetQuery(con, query)
+    sensor_data$date_time <- paste(sensor_data$date, sensor_data$time)
+    
+    # convert data string to numeric
+    sensor_data_num <- transform(sensor_data, 
+                                 temperature = as.numeric(temperature_degC), 
+                                 date_time = as.POSIXct(date_time))
+    
+    # Create a ggplot
+    ggplot(sensor_data_num, aes(x = date_time, y = temperature, group = 1)) +
+      geom_line() +
+      ggtitle("Temperature") +
+      labs(x = "Hour", y = "celcius") +
+      scale_x_datetime(date_breaks = "1 hour", date_labels = "%H") +
+      theme_grey(base_size = 14)
+  })
+  
+  # Humidity plot
   output$humidity_plot <- renderPlot({
     req(input$date)
     
