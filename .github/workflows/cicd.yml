@@ -31,6 +31,24 @@ jobs:
         push: true
         tags: ghcr.io/${{ github.repository }}:latest
     
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        role-to-assume: ${{ secrets.ROLE_ARN   }}
+        aws-region: us-east-1
+
+    - name: Get runner ip address
+      id: ip
+      uses: haythem/public-ip@v1.2
+
+    - name: Whitelist runner ip address
+      run: |
+        aws ec2 authorize-security-group-ingress \
+          --group-id ${{ secrets.AWS_INSTANCE_SG_ID }} \
+          --protocol tcp \
+          --port 22 \
+          --cidr ${{ steps.ip.outputs.ipv4 }}/32
+    
     - name: Deploy to an AWS EC2 instance
       uses: appleboy/ssh-action@master
       with:
@@ -41,3 +59,11 @@ jobs:
         script: |
           cd /srv/shiny-server/${{ secrets.APPNAME }}
           git pull
+
+    - name: Remove runner ip address
+        run: |
+          aws ec2 revoke-security-group-ingress \
+            --group-id ${{ secrets.AWS_INSTANCE_SG_ID }} \
+            --protocol tcp \
+            --port 22 \
+            --cidr ${{ steps.ip.outputs.ipv4 }}/32
