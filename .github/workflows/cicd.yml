@@ -30,12 +30,19 @@ jobs:
         file: ./Dockerfile
         push: true
         tags: ghcr.io/${{ github.repository }}:latest
-    
+
+  Deploy:
+    name: Deploy the app to AWS EC2 instance
+    runs-on: ubuntu-20.04
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v2
       with:
         role-to-assume: ${{ secrets.ROLE_ARN   }}
-        role-session-name: GitHub_to_AWS_via_FederatedOIDC
         aws-region: us-east-1
 
     - name: Get runner ip address
