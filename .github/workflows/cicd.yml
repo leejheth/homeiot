@@ -1,4 +1,4 @@
-name: CI
+name: CI CD pipeline
 
 on:
   push:
@@ -30,3 +30,14 @@ jobs:
         file: ./Dockerfile
         push: true
         tags: ghcr.io/${{ github.repository }}:latest
+    
+    - name: Deploy to an AWS EC2 instance
+      uses: leejheth/homeiot@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: ${{ secrets.PORT }}
+        script: |
+          cd /srv/shiny-server/${{ secrets.APPNAME }}
+          git pull
