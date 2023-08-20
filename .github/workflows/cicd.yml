@@ -32,7 +32,7 @@ jobs:
         tags: ghcr.io/${{ github.repository }}:latest
     
     - name: Deploy to an AWS EC2 instance
-      uses: leejheth/homeiot@main
+      uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
