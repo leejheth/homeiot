@@ -24,7 +24,7 @@ con <- dbConnect(RMySQL::MySQL(),
 
 # UI
 ui <- fluidPage(
-  titlePanel("Home Sensor Data"),
+  titlePanel("Home air quality monitoring"),
   sidebarLayout(
     sidebarPanel(
       selectInput("date", "Select a Date:", choices = NULL)
