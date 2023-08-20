@@ -62,7 +62,9 @@ docker run --mount type=bind,source="$(pwd)"/conf,target=/home/conf --device=/de
 
 ## Dashboard deployment
 
-To deploy your Shiny app on the server, e.g. on a AWS EC2 instance, there is a great tutorial [here](https://www.charlesbordet.com/en/guide-shiny-aws/#what-should-you-expect-from-this-guide).
+To deploy the Shiny app on the server, e.g. on a AWS EC2 instance, there is a great tutorial [here](https://www.charlesbordet.com/en/guide-shiny-aws/#what-should-you-expect-from-this-guide).
+
+The current repository employs a CI/CD pipeline (`.github/workflows/cicd.yml`) to create a docker file (to be run on Raspberry Pi) and to automatically deploy the Shiny app on AWS EC2.
 
 ## References
 * [SCD4x CO2 sensors](https://developer.sensirion.com/sensirion-products/scd4x-co2-sensors/)
