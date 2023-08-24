@@ -1,7 +1,9 @@
 # homeIoT
 Home IoT data collection and upload.
 
-Collect CO2, humidity, temperature data using Sensirion SCD41 sensor and upload the data to AWS RDS database (MySQL engine). This is containerized (Docker) and run on Raspberry Pi B+ model (32bit, ARMv6 CPU). Interactive visualization of data on R Shiny app.
+Collect CO2, humidity, temperature data using Sensirion SCD41 sensor and upload the data to AWS RDS database (MySQL engine). This is containerized (Docker) and run on Raspberry Pi B+ model (32bit, ARMv6 CPU). Interactive visualization of data on R Shiny app (dashboard).
+
+CI/CD pipeline: on git push, a new Docker image will be generated and saved in GitHub Packages. Any changes made to the Shiny app will automatically be deployed to an AWS EC2 instance (where the app is hosted) and update the web app. 
 
 This repository is under development and more features will follow.
 
