@@ -1,4 +1,5 @@
 library(shiny)
+library(shinydashboard)
 library(ggplot2)
 library(dplyr)
 library(DBI)
@@ -23,19 +24,33 @@ con <- dbConnect(RMySQL::MySQL(),
                  password = db_password)
 
 # UI
-ui <- fluidPage(
-  titlePanel("Home air quality monitoring"),
-  sidebarLayout(
-    sidebarPanel(
-      selectInput("date", "Select a Date:", choices = NULL)
-    ),
-    mainPanel(
-      plotOutput("co2_plot"),
-      plotOutput("temperature_plot"),
-      plotOutput("humidity_plot")
-    ),
+ui <- dashboardPage(
+  dashboardHeader(title = "Home air quality monitoring"),
+  dashboardSidebar(
+    sidebarMenu(
+      menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard"))
+    )
+  ),
+  dashboardBody(
+    tabItems(
+      tabItem(tabName = "dashboard",
+        fluidRow(
+          box(plotOutput("co2_plot", height = 250)),
+          box(
+            selectInput("date", "Select a Date:", choices = NULL)
+          )
+        ),
+        fluidRow(
+          box(plotOutput("temperature_plot", height = 250))
+        ),
+        fluidRow(
+          box(plotOutput("humidity_plot", height = 250))
+        )
+      )
+    )
   )
 )
+
 
 # Server
 server <- function(input, output, session) {
@@ -73,7 +88,9 @@ server <- function(input, output, session) {
       ggtitle("CO2") +
       labs(x = "Hour", y = "ppm") +
       scale_x_datetime(date_breaks = "1 hour", date_labels = "%H") +
-      theme_grey(base_size = 14)
+      theme_grey(base_size = 14) +
+      theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+            panel.background = element_blank(), axis.line = element_line(colour = "black"))
   })
   
   # Temperature plot
@@ -96,7 +113,9 @@ server <- function(input, output, session) {
       ggtitle("Temperature") +
       labs(x = "Hour", y = "celcius") +
       scale_x_datetime(date_breaks = "1 hour", date_labels = "%H") +
-      theme_grey(base_size = 14)
+      theme_grey(base_size = 14) +
+      theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+            panel.background = element_blank(), axis.line = element_line(colour = "black"))
   })
   
   # Humidity plot
@@ -119,7 +138,9 @@ server <- function(input, output, session) {
       ggtitle("Humidity") +
       labs(x = "Hour", y = "% RH") +
       scale_x_datetime(date_breaks = "1 hour", date_labels = "%H") +
-      theme_grey(base_size = 14)
+      theme_grey(base_size = 14) +
+      theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+            panel.background = element_blank(), axis.line = element_line(colour = "black"))
   })
 }
 
