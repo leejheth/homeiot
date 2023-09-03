@@ -34,17 +34,16 @@ ui <- dashboardPage(
   dashboardBody(
     tabItems(
       tabItem(tabName = "dashboard",
+        box(
+          dateInput("date", "Select date:", format = 'yyyy-mm-dd'),
+          width=3
+        ),
         fluidRow(
-          box(plotOutput("co2_plot", height = 250)),
           box(
-            selectInput("date", "Select a Date:", choices = NULL)
+            plotOutput("co2_plot", height = 250),
+            plotOutput("temperature_plot", height = 250),
+            plotOutput("humidity_plot", height = 250)
           )
-        ),
-        fluidRow(
-          box(plotOutput("temperature_plot", height = 250))
-        ),
-        fluidRow(
-          box(plotOutput("humidity_plot", height = 250))
         )
       )
     )
@@ -65,7 +64,7 @@ server <- function(input, output, session) {
   
   # Update the date drop-down choices (set today as default choice)
   observe({
-    updateSelectInput(session, "date", choices = get_available_dates(), selected = today)
+    updateDateInput(session, "date", min = min(get_available_dates()), max = max(get_available_dates()))
   })
 
   # CO2 plot
