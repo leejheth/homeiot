@@ -1,5 +1,6 @@
 # homeIoT
-Home IoT data collection and upload.
+
+Containerized, automated, and AWS-assisted solution for air quality monitoring at home.
 
 **Air quality monitoring.** Collect CO2, humidity, temperature data using Sensirion SCD41 sensor and upload the data to AWS RDS database (MySQL engine). This is containerized (Docker) and run on Raspberry Pi B+ model (32bit, ARMv6 CPU). Interactive visualization of data on R Shiny app (dashboard).
 
