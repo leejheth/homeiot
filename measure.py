@@ -23,7 +23,7 @@ with open('conf/mysql.txt', 'r') as f:
 #  - slave address: 0
 with ShdlcSerialPort(port='/dev/ttyUSB0', baudrate=460800) as port:
     bridge = SensorBridgeShdlcDevice(ShdlcConnection(port), slave_address=0)
-    print("SensorBridge SN: {}".format(bridge.get_serial_number()))
+    # print("SensorBridge SN: {}".format(bridge.get_serial_number()))
 
     # Configure SensorBridge port 1 for SCD4x
     bridge.set_i2c_frequency(SensorBridgePort.ONE, frequency=100e3)
@@ -68,12 +68,15 @@ with ShdlcSerialPort(port='/dev/ttyUSB0', baudrate=460800) as port:
 
             # upload data to MySQL database
             query = f"INSERT INTO {tablename} (CO2_ppm, temperature_degC, humidity_RH, date, time) VALUES (%s, %s, %s, %s, %s)"
+            # remove suffix (units) from the string
             cur.execute(query, (f"{co2}".removesuffix(" ppm"), f"{temperature}".removesuffix(" °C"), f"{humidity}".removesuffix(" %RH"), date_str, time_str))
             conn.commit()
     
+    # break the loop for keyboard interruption
     except KeyboardInterrupt:
         print("Keyboard interruption detected. Exiting...")
 
+    # close connections
     finally:
         scd4x.stop_periodic_measurement()
         cur.close()
