@@ -6,6 +6,8 @@ Containerized, automated, and AWS-assisted solution for air quality monitoring a
 
 **Automated depolyment** (using CI/CD): on git push, a new Docker image will be generated and saved in GitHub Packages. Any changes made to the Shiny app will automatically be deployed to an AWS EC2 instance (where the app is hosted) and update the web app. 
 
+![diagram](doc/homeiot-01.png)
+
 This repository is under development and more features will follow.
 
 ## Installation
