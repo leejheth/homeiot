@@ -29,6 +29,9 @@ ui <- dashboardPage(
   dashboardSidebar(
     sidebarMenu(
       menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard"))
+    ),
+    sidebarMenu(
+      menuItem("Statistics", tabName = "statistics", icon = icon("table"))
     )
   ),
   dashboardBody(
@@ -45,7 +48,8 @@ ui <- dashboardPage(
             plotOutput("humidity_plot", height = 250)
           )
         )
-      )
+      ),
+      tabItem(tabName = "statistics")
     )
   )
 )
