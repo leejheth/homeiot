@@ -31,7 +31,10 @@ ui <- dashboardPage(
       menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard"))
     ),
     sidebarMenu(
-      menuItem("Statistics", tabName = "statistics", icon = icon("table"))
+      menuItem("Latest data", tabName = "datatable", icon = icon("table"))
+    ),
+    sidebarMenu(
+      menuItem("Statistics", tabName = "cstatus", icon = icon("list-alt"))
     )
   ),
   dashboardBody(
@@ -49,7 +52,20 @@ ui <- dashboardPage(
           )
         )
       ),
-      tabItem(tabName = "statistics")
+      tabItem(tabName = "datatable",
+        fluidRow(
+          tableOutput("latestDataTable")
+        )
+      ),
+      tabItem(tabName = "cstatus",
+        fluidRow(
+          textOutput("Today"),
+          textOutput("latestTime"),
+          textOutput("latestCO2"),
+          textOutput("latestTemperature"),
+          textOutput("latestHumidity")
+        )
+      )
     )
   )
 )
@@ -144,6 +160,25 @@ server <- function(input, output, session) {
       theme_grey(base_size = 14) +
       theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
             panel.background = element_blank(), axis.line = element_line(colour = "black"))
+  })
+  
+  # Fetch the latest data point
+  query <- paste0("SELECT date, time, CO2_ppm, temperature_degC, humidity_RH 
+              FROM sensirion 
+              WHERE date = '", today,"'
+              ORDER BY time DESC 
+              LIMIT 1")
+  latest_data <- dbGetQuery(con, query)
+  
+  # Display the latest data
+  output$Today <- renderText({paste("Today: ", today)})
+  output$latestTime <- renderText({paste("Time: ", as.character(latest_data$time))})
+  output$latestCO2 <- renderText({paste("CO2: ", latest_data$CO2_ppm, " ppm")})
+  output$latestTemperature <- renderText({paste("Temperature: ", latest_data$temperature_degC, "°C")})
+  output$latestHumidity <- renderText({paste("Humidity: ", latest_data$humidity_RH, "%")})
+  
+  output$latestDataTable <- renderTable({
+    latest_data
   })
 }
 
